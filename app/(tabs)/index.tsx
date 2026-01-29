@@ -74,6 +74,12 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
       </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">Video Demo</ThemedText>
+        <Link href="/video">
+          <ThemedText type="link">Open Video Player Example</ThemedText>
+        </Link>
+      </ThemedView>
     </ParallaxScrollView>
   );
 }
