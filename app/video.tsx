@@ -8,9 +8,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { CapCutTimeline } from '../components/CapCutTimeline';
 
-// 4K Nature Video - Ocean waves
+// 4K Video with Audio - Sintel (Blender Foundation)
 const videoSource =
-    'https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4';
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Stable screen options

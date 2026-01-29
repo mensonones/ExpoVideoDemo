@@ -15,11 +15,11 @@ import {
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
     interpolate,
-    runOnJS,
     useAnimatedStyle,
     useSharedValue,
     withSpring,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 // ============================================================================
 // CONSTANTS & CONFIGURATION
@@ -277,7 +277,7 @@ export const CapCutTimeline = memo(function CapCutTimeline({
                         quality: THUMBNAIL_CONFIG.quality,
                     });
                     return result.uri;
-                } catch (e) {
+                } catch {
                     // Silent fail for individual thumbnails
                     return null;
                 }
@@ -333,7 +333,7 @@ export const CapCutTimeline = memo(function CapCutTimeline({
         const subscription = player.addListener('timeUpdate', (payload) => {
             if (!isDragging.value && duration > 0) {
                 progress.value = payload.currentTime / duration;
-                runOnJS(updateDisplayTime)(payload.currentTime);
+                scheduleOnRN(updateDisplayTime, payload.currentTime);
             }
         });
         return () => subscription.remove();
@@ -364,8 +364,8 @@ export const CapCutTimeline = memo(function CapCutTimeline({
             const newProgress = x / TIMELINE_WIDTH;
             progress.value = newProgress;
             const newTime = newProgress * duration;
-            runOnJS(seekTo)(newTime);
-            runOnJS(updateDisplayTime)(newTime);
+            scheduleOnRN(seekTo, newTime);
+            scheduleOnRN(updateDisplayTime, newTime);
             playheadScale.value = withSpring(1, { damping: 12, stiffness: 180 });
         });
 
@@ -381,14 +381,14 @@ export const CapCutTimeline = memo(function CapCutTimeline({
             const newProgress = x / TIMELINE_WIDTH;
             progress.value = newProgress;
             const newTime = newProgress * duration;
-            runOnJS(updateDisplayTime)(newTime);
+            scheduleOnRN(updateDisplayTime, newTime);
         })
         .onEnd((event) => {
             'worklet';
             const x = Math.max(0, Math.min(event.x, TIMELINE_WIDTH));
             const newProgress = x / TIMELINE_WIDTH;
             const newTime = newProgress * duration;
-            runOnJS(seekTo)(newTime);
+            scheduleOnRN(seekTo, newTime);
             isDragging.value = false;
             playheadScale.value = withSpring(1, { damping: 12, stiffness: 180 });
         });
